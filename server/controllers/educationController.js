@@ -7,7 +7,7 @@ const {Specialization,
     Group,
     Education,
     Events,
-    Skills
+    Skills, Description
 } = require('../models')
 const {DataTypes} = require("sequelize");
 
@@ -29,22 +29,30 @@ class EducationController{
                     })
                 )
             }
-
             return res.json({education})
         } catch (e) {
             next(ApiError.badRequest(e.message))
         }
-
-
     }
     async getAll(req,res){
         try{
             const education = await Education.findAll({
+                model: Education,
                 attributes: ['id'],
-                include: [{
-                    model: Student,
-                    attributes: ['id','surname','name', 'middle_name','rating_score', 'role', 'email', 'img' ],
-                },
+                include: [
+                    {
+                        model: Student,
+                        attributes: ['id','surname','name', 'middle_name','rating_score', 'role', 'email', 'img' ],
+                    },
+                    {model: Skills,
+                        attributes: ['id', 'name', 'description'],
+                        include:[
+                            {
+                                model: Description,
+                                attributes: ['name']
+                            }
+                        ]
+                    },
                     {
                         model: Specialization,
                         attributes:['id'],
@@ -79,18 +87,25 @@ class EducationController{
                 where:{
                     id: id
                 },
+                model: Education,
                 attributes: ['id'],
                 include: [
-                    {model: Skills,
-                        where:{
-                            EducationId: id
-                        },
-                        attributes: ['id', 'name', 'description']
-                    },
                     {
                     model: Student,
                     attributes: ['id','surname','name', 'middle_name','rating_score', 'role', 'email', 'img' ],
                 },
+                    {model: Skills,
+                        where:{
+                            EducationId: id
+                        },
+                        attributes: ['id', 'name', 'description'],
+                        include:[
+                            {
+                                model: Description,
+                                attributes: ['name']
+                            }
+                        ]
+                    },
                     {
                         model: Specialization,
                         attributes:['id'],

@@ -56,9 +56,12 @@ const Education = sequelize.define('Education',{
 const Skills = sequelize.define('Skills',{
     id:{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name:{type: DataTypes.STRING},
-    description:{type: DataTypes.STRING},
 })
 
+const Description = sequelize.define('description',{
+    id:{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    name:{type: DataTypes.STRING},
+})
 
 
 Group.hasMany(Student)
@@ -85,6 +88,9 @@ Education.belongsTo(Specialization)
 Education.hasMany(Skills);
 Skills.belongsTo(Education)
 
+Skills.hasMany(Description);
+Description.belongsTo(Skills)
+
 module.exports = {
     Student,
     Group,
@@ -94,6 +100,7 @@ module.exports = {
     Profile,
     Specialization,
     Education,
-    Skills
+    Skills,
+    Description
 
 }

@@ -9,6 +9,7 @@ const specializationRouter = require('./specializationRouter')
 const educationRouter = require('./educationRouter')
 const eventsRouter = require('./eventsRouter')
 const skillsRouter = require('./skillsRouter')
+const descriptionRouter = require('./descriptionRouter')
 
 
 router.use('/student', studentRouter)
@@ -20,7 +21,7 @@ router.use('/specialization', specializationRouter)
 router.use('/education', educationRouter)
 router.use('/events', eventsRouter)
 router.use('/skills', skillsRouter)
-
+router.use('/description', descriptionRouter)
 
 
 module.exports = router
