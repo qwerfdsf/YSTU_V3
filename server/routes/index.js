@@ -10,6 +10,10 @@ const educationRouter = require('./educationRouter')
 const eventsRouter = require('./eventsRouter')
 const skillsRouter = require('./skillsRouter')
 const descriptionRouter = require('./descriptionRouter')
+const workRouter = require('./workRouter')
+const vacancyRouter = require('./vacancyRouter')
+const companyRouter = require('./companyRouter')
+const employerRouter = require('./employerRouter')
 
 
 router.use('/student', studentRouter)
@@ -22,6 +26,10 @@ router.use('/education', educationRouter)
 router.use('/events', eventsRouter)
 router.use('/skills', skillsRouter)
 router.use('/description', descriptionRouter)
+router.use('/work', workRouter)
+router.use('/vacancy', vacancyRouter)
+router.use('/company', companyRouter)
+router.use('/employer', employerRouter)
 
 
 module.exports = router

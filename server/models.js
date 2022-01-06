@@ -63,6 +63,48 @@ const Description = sequelize.define('description',{
     name:{type: DataTypes.STRING},
 })
 
+// работа
+const Work = sequelize.define('Work',{
+    id:{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+})
+
+const Employer = sequelize.define('Employer',{
+    id:{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    surname:{type: DataTypes.STRING, defaultValue: "Axmetzyanov"},
+    name:{type: DataTypes.STRING, defaultValue: "Aleksei"},
+    middle_name:{type: DataTypes.STRING, defaultValue: "Alekseevich"},
+    email:{type: DataTypes.STRING, unique:true},
+    password:{type: DataTypes.STRING},
+    //rating_score:{type: DataTypes.INTEGER, defaultValue: 0},
+    role:{type: DataTypes.STRING, defaultValue: "WORK"},
+    img:{type: DataTypes.STRING}
+})
+
+const Company = sequelize.define('Company',{
+    id:{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    name:{type: DataTypes.STRING, defaultValue: "Areal"},
+    Description:{type: DataTypes.STRING, defaultValue: "WEB-разработка"},
+})
+
+const Vacancy = sequelize.define('Vacancy',{
+    id:{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    name:{type: DataTypes.STRING, defaultValue: "WEB-разработчик"},
+    position:{type: DataTypes.STRING, defaultValue: "frontend"},
+    direction:{type: DataTypes.STRING, defaultValue: "WEB-разработка"},
+    requirements:{type: DataTypes.STRING, defaultValue: "Знание css, html, Вади"},
+})
+
+Company.hasMany(Vacancy)
+Vacancy.belongsTo(Company)
+
+Company.hasMany(Employer)
+Employer.belongsTo(Company)
+
+Vacancy.hasMany(Work)
+Work.belongsTo(Vacancy)
+
+Student.hasMany(Work)
+Work.belongsTo(Student)
 
 Group.hasMany(Student)
 Student.belongsTo(Group)
@@ -101,6 +143,10 @@ module.exports = {
     Specialization,
     Education,
     Skills,
-    Description
+    Description,
+    Work,
+    Employer,
+    Company,
+    Vacancy,
 
 }

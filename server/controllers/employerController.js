@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const uuid = require('uuid')
 const path = require('path');
-const {Student, Group, Rating} = require('../models')
+const {Employer, Company} = require('../models')
 
 
 const generateJwt = (id, email)=>{
@@ -15,14 +15,13 @@ const generateJwt = (id, email)=>{
 }
 
 
-class StudentController{
+class EmployerController{
     async registration(req,res,next){
-        const {surname, name, middle_name, email, password, GroupId,rating_score, role} = req.body
+        const {surname, name, middle_name, email, password, CompanyId, role} = req.body
         if (!email || !password){
             return next(ApiError.badRequest('не правильный email или password'))
-
         }
-        const candidate = await Student.findOne({where:{email}})
+        const candidate = await Employer.findOne({where:{email}})
         if (candidate){
             return next(ApiError.badRequest('Пользователь с таким email уже сущетвует'))
         }
@@ -30,42 +29,43 @@ class StudentController{
         let filename = uuid.v4() + ".jpg"
         img.mv(path.resolve(__dirname, '..', 'static', filename))
         const hashPassword = await bcrypt.hash(password, 5)
-        const student = await Student.create({surname, name, middle_name, rating_score,
-                                                    email, GroupId, img:filename, password: hashPassword})
-        //const rating = await Rating.create({id: student.id})
-        const token = generateJwt(student.id, student.email)
+        const employer = await Employer.create(
+            {surname, name, middle_name,
+                    email, CompanyId, img:filename,
+                    password: hashPassword})
+        const token = generateJwt(employer.id, employer.email)
         return res.json({token})
-        }
+    }
 
     async login(req,res,next){
         const {email, password} = req.body
-        const student = await Student.findOne({where:{email}})
-        if (!student){
+        const employer = await Employer.findOne({where:{email}})
+        if (!employer){
             return next(ApiError.internal('Пользователь с таким email не сущетвует'))
         }
-        let comparePassword = bcrypt.compareSync(password, student.password)
+        let comparePassword = bcrypt.compareSync(password, employer.password)
         if (!comparePassword) {
             return next(ApiError.internal('Указан неверный пароль'))
         }
         console.log(res)
-        const token = generateJwt(student.id, student.email)
+        const token = generateJwt(employer.id, employer.email)
         return res.json({token})
     }
 
     async check(req,res,next){
-        const token = generateJwt(req.student.id, req.student.email)
+        const token = generateJwt(req.employer.id, req.employer.email)
         return res.json({token})
     }
     async getAll(req,res){
         try{
-            const students = await Student.findAll({
-                attributes: ['id','surname','name', 'middle_name','rating_score', 'role', 'email', 'img' ],
+            const employer = await Employer.findAll({
+                attributes: ['id','surname','name', 'middle_name','CompanyId', 'role', 'email', 'img' ],
                 include: [{
-                model: Group,
-                attributes: ['name']
+                    model: Company,
+                    attributes: ['name', 'Description']
                 }]
             })
-            return res.json(students)
+            return res.json(employer)
         }catch (e){
             res.status(500).json(e)
         }
@@ -73,21 +73,21 @@ class StudentController{
     async getOne(req,res){
         try{
             const {id} = req.params
-            const students = await Student.findOne({
+            const employer = await Employer.findOne({
                 where:{
                     id: id
                 },
-                attributes: ['id','surname','name', 'middle_name','rating_score', 'role', 'email', 'img' ],
+                attributes: ['id','surname','name', 'middle_name','CompanyId', 'role', 'email', 'img' ],
                 include: [{
-                    model: Group,
-                    attributes: ['name']
+                    model: Company,
+                    attributes: ['name', 'Description']
                 }]
             })
-            return res.json(students)
+            return res.json(employer)
         }catch (e){
             res.status(500).json(e)
         }
     }
 }
 
-module.exports = new StudentController()
+module.exports = new EmployerController()
