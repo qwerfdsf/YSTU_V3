@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const uuid = require('uuid')
 const path = require('path');
-const {Student, Group, Rating} = require('../models')
+const {Student, Group, Rating, Description} = require('../models')
 
 
 const generateJwt = (id, email)=>{
@@ -86,6 +86,34 @@ class StudentController{
             return res.json(students)
         }catch (e){
             res.status(500).json(e)
+        }
+    }
+    async update(req,res){
+        try{
+            const {id} = req.params
+            const students = await Student.findOne({
+                where:{
+                    id: id
+                }
+            });
+            if(students){
+                const updatedStudents = await students.update({
+                    name : req.body.name,
+                    surname: req.body.surname,
+                    middle_name: req.body.middle_name,
+                    email: req.body.email,
+                    password: req.body.password,
+                    GroupId: req.body.GroupId,
+                })
+                res.status(201).send(updatedStudents);
+            }
+            else{
+                res.status(404).send("Students Not Found");
+            }
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e);
         }
     }
 }

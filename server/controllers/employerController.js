@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const uuid = require('uuid')
 const path = require('path');
-const {Employer, Company} = require('../models')
+const {Employer, Company, Description} = require('../models')
 
 
 const generateJwt = (id, email)=>{
@@ -86,6 +86,35 @@ class EmployerController{
             return res.json(employer)
         }catch (e){
             res.status(500).json(e)
+        }
+    }
+    async update(req,res){
+        try{
+            const {id} = req.params
+            const employer = await Employer.findOne({
+                where:{
+                    id: id
+                }
+            });
+            if(employer){
+                const updatedEmployer = await employer.update({
+                    name : req.body.name,
+                    surname: req.body.surname,
+                    middle_name: req.body.middle_name,
+                    email: req.body.email,
+                    password: req.body.password,
+                    CompanyId: req.body.CompanyId,
+
+                })
+                res.status(201).send(updatedEmployer);
+            }
+            else{
+                res.status(404).send("Employer Not Found");
+            }
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e);
         }
     }
 }

@@ -1,6 +1,6 @@
 const ApiError = require('../error/ApiError')
 const {Description,
-        Skills,
+        Skills, Company,
         } = require('../models')
 
 
@@ -41,6 +41,30 @@ class DescriptionController{
             return res.json(description)
         }catch (e){
             res.status(500).json(e)
+        }
+    }
+    async update(req,res){
+        try{
+            const {id} = req.params
+            const description = await Description.findOne({
+                where:{
+                    id: id
+                }
+            });
+            if(description){
+                const updatedDescription = await description.update({
+                    name : req.body.name,
+                    SkillId: req.body.SkillId
+                })
+                res.status(201).send(updatedDescription);
+            }
+            else{
+                res.status(404).send("Description Not Found");
+            }
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e);
         }
     }
 }

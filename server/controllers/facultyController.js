@@ -1,5 +1,5 @@
 const ApiError = require('../error/ApiError')
-const {Faculty} = require('../models')
+const {Faculty, Description} = require('../models')
 
 
 class FacultyController{
@@ -38,6 +38,29 @@ class FacultyController{
             return res.json(faculty)
         }catch (e){
             res.status(500).json(e)
+        }
+    }
+    async update(req,res){
+        try{
+            const {id} = req.params
+            const faculty = await Faculty.findOne({
+                where:{
+                    id: id
+                }
+            });
+            if(faculty){
+                const updatedFaculty = await faculty.update({
+                    name : req.body.name,
+                })
+                res.status(201).send(updatedFaculty);
+            }
+            else{
+                res.status(404).send("Faculty Not Found");
+            }
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e);
         }
     }
 }

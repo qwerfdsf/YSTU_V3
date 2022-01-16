@@ -132,6 +132,30 @@ class EducationController{
             res.status(500).json(e)
         }
     }
+    async update(req,res){
+        try{
+            const {id} = req.params
+            const education = await Education.findOne({
+                where:{
+                    id: id
+                }
+            });
+            if(education){
+                const updatedEducation = await education.update({
+                    StudentId : req.body.StudentId,
+                    SpecializationId: req.body.SpecializationId
+                })
+                res.status(201).send(updatedEducation);
+            }
+            else{
+                res.status(404).send("Education Not Found");
+            }
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e);
+        }
+    }
 }
 
 

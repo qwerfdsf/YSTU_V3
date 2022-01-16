@@ -6,5 +6,6 @@ const  specializationController = require('../controllers/specializationControll
 router.post('/', specializationController.add)
 router.get('/', specializationController.getAll)
 router.get('/:id', specializationController.getOne)
+router.put('/:id', specializationController.update)
 
 module.exports = router

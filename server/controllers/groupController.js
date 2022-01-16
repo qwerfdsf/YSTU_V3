@@ -41,6 +41,29 @@ class GroupController{
             res.status(500).json(e)
         }
     }
+    async update(req,res){
+        try{
+            const {id} = req.params
+            const group = await Group.findOne({
+                where : {
+                    id: id
+                }
+            });
+            if(group){
+                const updatedGroup = await group.update({
+                    name : req.body.name
+                })
+                res.status(201).send(updatedGroup);
+            }
+            else{
+                res.status(404).send("Group Not Found");
+            }
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e);
+        }
+    }
 }
 
 module.exports = new GroupController()

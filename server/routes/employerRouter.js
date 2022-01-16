@@ -9,5 +9,6 @@ router.post('/login', employerController.login)
 router.get('/auth',authMiddleware, employerController.check)
 router.get('/registration', employerController.getAll)
 router.get('/registration/:id', employerController.getOne)
+router.put('/registration/:id', employerController.update)
 
 module.exports = router

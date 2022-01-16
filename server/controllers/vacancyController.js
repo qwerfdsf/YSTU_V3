@@ -1,5 +1,5 @@
 const ApiError = require('../error/ApiError')
-const {Vacancy, Company,
+const {Vacancy, Company, Description,
 } = require('../models')
 
 
@@ -36,6 +36,33 @@ class VacancyController{
             return res.json(vacancy)
         }catch (e){
             res.status(500).json(e)
+        }
+    }
+    async update(req,res){
+        try{
+            const {id} = req.params
+            const vacancy = await Vacancy.findOne({
+                where:{
+                    id: id
+                }
+            });
+            if(vacancy){
+                const updatedVacancy = await vacancy.update({
+                    name : req.body.name,
+                    position: req.body.position,
+                    direction: req.body.direction,
+                    requirements: req.body.requirements,
+                    CompanyId: req.body.CompanyId,
+                })
+                res.status(201).send(updatedVacancy);
+            }
+            else{
+                res.status(404).send("Vacancy Not Found");
+            }
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e);
         }
     }
 }

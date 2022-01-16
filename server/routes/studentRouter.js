@@ -9,5 +9,6 @@ router.post('/login', studentController.login)
 router.get('/auth',authMiddleware, studentController.check)
 router.get('/registration', studentController.getAll)
 router.get('/registration/:id', studentController.getOne)
+router.put('/registration/:id', studentController.update)
 
 module.exports = router

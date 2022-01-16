@@ -1,5 +1,5 @@
 const ApiError = require('../error/ApiError')
-const {Direction} = require('../models')
+const {Direction, Description} = require('../models')
 
 
 class DirectionController{
@@ -38,6 +38,29 @@ class DirectionController{
             return res.json(direction)
         }catch (e){
             res.status(500).json(e)
+        }
+    }
+    async update(req,res){
+        try{
+            const {id} = req.params
+            const direction = await Direction.findOne({
+                where:{
+                    id: id
+                }
+            });
+            if(direction){
+                const updatedDirection = await direction.update({
+                    name : req.body.name,
+                })
+                res.status(201).send(updatedDirection);
+            }
+            else{
+                res.status(404).send("Direction Not Found");
+            }
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e);
         }
     }
 }
